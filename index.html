@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yarely ❤️ Ultra Final</title>
+
+  <link rel="apple-touch-icon" href="icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: black;
+      color: white;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    .hearts {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .heart {
+      position: absolute;
+      color: #ff2e2e;
+      font-size: 20px;
+      animation: float 6s linear infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) scale(0.5);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+      }
+    }
+
+    .container,
+    .card {
+      transition: all 0.5s ease;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #ff2e2e;
+    }
+
+    button {
+      padding: 12px 20px;
+      margin: 8px;
+      border: 2px solid #ff2e2e;
+      border-radius: 15px;
+      background: transparent;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #ff2e2e;
+    }
+
+    .card {
+      background: rgba(20, 20, 20, 0.95);
+      border: 1px solid #ff2e2e;
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 20px;
+      animation: fade 0.5s;
+    }
+
+    img {
+      width: 90%;
+      border-radius: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    input,
+    textarea {
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      text-align: center;
+    }
+
+    textarea {
+      resize: none;
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 999;
+      color: #ff2e2e;
+      font-size: 24px;
+    }
+
+    .spinner {
+      margin-top: 20px;
+      border: 5px solid #ff2e2e;
+      border-top: 5px solid white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: #ff2e2e;
+      animation: confetti-fall linear infinite;
+      z-index: 1000;
+      border-radius: 50%;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        top: -10px;
+        opacity: 1;
+      }
+      100% {
+        top: 110vh;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="hearts" id="hearts"></div>
+
+  <div id="loading">
+    Yarely ❤️ Ultra Dinámica
+    <div class="spinner"></div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="lockScreen" class="container hidden">
+    <h2>🔒 Yarely ❤️</h2>
+    <p>Ingresa la contraseña</p>
+    <input type="password" id="password" />
+    <br /><br />
+    <button onclick="checkPassword()">Entrar</button>
+  </div>
+
+  <!-- APP -->
+  <div id="app" class="hidden container">
+    <h2>Yarely ❤️</h2>
+
+    <!-- MENÚ PRINCIPAL -->
+    <button onclick="showSection('mensajes')">💌 Mensajes diarios</button>
+    <button onclick="showSection('galeria')">📸 Galería interactiva</button>
+    <button onclick="showSection('juego')">🎮 Juego de preguntas</button>
+    <button onclick="showSection('miniMemoria')">🧩 Mini juego memoria</button>
+    <button onclick="showSection('miniAdivina')">🧠 Mini juego adivina</button>
+    <button onclick="showSection('cajaRecuerdos')">💖 Caja de recuerdos</button>
+    <button onclick="showSection('notas')">📝 Notas rápidas</button>
+    <button onclick="botonSorpresa()">🎉 Sorpresa</button>
+
+    <!-- SECCIONES -->
+    <div id="mensajes" class="hidden card">
+      <h3>Mensaje del día</h3>
+      <p id="mensajeTexto"></p>
+    </div>
+
+    <div id="galeria" class="hidden card">
+      <h3>Galería ❤️</h3>
+      <img src="foto1.jpg" onclick="fotoSorpresa(0)" />
+      <img src="foto2.jpg" onclick="fotoSorpresa(1)" />
+      <img src="foto3.jpg" onclick="fotoSorpresa(2)" />
+      <img src="foto4.jpg" onclick="fotoSorpresa(3)" />
+      <img src="foto5.jpg" onclick="fotoSorpresa(4)" />
+      <p id="sorpresaFoto"></p>
+    </div>
+
+    <div id="juego" class="hidden card">
+      <h3>Juego de preguntas 🎮</h3>
+      <p id="pregunta"></p>
+      <button onclick="responder(0)" id="op1"></button>
+      <button onclick="responder(1)" id="op2"></button>
+      <button onclick="responder(2)" id="op3"></button>
+      <p id="resultado"></p>
+      <p id="puntaje"></p>
+    </div>
+
+    <div id="miniMemoria" class="hidden card">
+      <h3>Mini juego memoria 🧩</h3>
+      <p>Empareja los emojis correctos ❤️</p>
+      <div id="memoriaGrid"></div>
+      <p id="miniMemResultado"></p>
+    </div>
+
+    <div id="miniAdivina" class="hidden card">
+      <h3>Mini juego adivina 🧠</h3>
+      <p>Adivina la frase romántica del día</p>
+      <div id="adivinaOpciones"></div>
+      <p id="miniAdivResultado"></p>
+    </div>
+
+    <div id="cajaRecuerdos" class="hidden card">
+      <h3>Caja de recuerdos 💖</h3>
+      <button onclick="recuerdoSorpresa()">Descubre un recuerdo</button>
+      <p id="recuerdoTexto"></p>
+    </div>
+
+    <div id="notas" class="hidden card">
+      <h3>Notas rápidas 📝</h3>
+      <textarea id="notasTexto" rows="5" style="width: 90%"></textarea>
+      <p>💡 Tus notas se guardan incluso al cerrar la app.</p>
+    </div>
+  </div>
+
+  <script>
+    // CORAZONES
+    function crearCorazon() {
+      let heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerText = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 20 + 10 + "px";
+      heart.style.animationDuration = Math.random() * 3 + 3 + "s";
+      document.getElementById("hearts").appendChild(heart);
+      setTimeout(() => heart.remove(), 6000);
+    }
+    setInterval(crearCorazon, 300);
+
+    // CARGA
+    setTimeout(() => {
+      loading.style.opacity = 0;
+      setTimeout(() => {
+        loading.style.display = "none";
+        lockScreen.classList.remove("hidden");
+      }, 500);
+    }, 2000);
+
+    // LOGIN
+    function checkPassword() {
+      if (password.value === "241223") {
+        lockScreen.style.display = "none";
+        app.classList.remove("hidden");
+        if (navigator.vibrate) {
+          navigator.vibrate([50, 100, 50]);
+        }
+        cargarMensaje();
+        cargarJuego();
+        generarConfeti();
+        cargarNotas();
+        inicializarMiniMemoria();
+        inicializarMiniAdivina();
+      } else {
+        alert("Contraseña incorrecta 😅");
+      }
+    }
+
+    // SECCIONES
+    function showSection(sec) {
+      let sections = [
+        "mensajes",
+        "galeria",
+        "juego",
+        "miniMemoria",
+        "miniAdivina",
+        "cajaRecuerdos",
+        "notas",
+      ];
+      sections.forEach((s) => document.getElementById(s).classList.add("hidden"));
+      if (document.getElementById(sec))
+        document.getElementById(sec).classList.remove("hidden");
+    }
+
+    // MENSAJES DIARIOS
+    const mensajesArr = [
+      "Me encanta estar contigo ❤️",
+      "Eres lo mejor que me ha pasado",
+      "Contigo todo es más divertido",
+      "Me gusta cómo eres",
+      "No lo digo siempre pero te amo",
+      "Quiero que sigamos así",
+      "Eres mi persona favorita",
+      "Me haces feliz",
+      "A tu lado todo es mejor",
+      "Vamos por más aventuras",
+      "Eres única",
+      "Contigo todo es más fácil",
+      "Siempre pienso en ti",
+      "Me haces sonreír",
+      "Sigo eligiéndote",
+      "Eres especial para mí",
+      "Gracias por estar",
+      "Todo contigo es diferente",
+      "Me inspiras",
+      "Quiero seguir aprendiendo contigo",
+    ];
+    function cargarMensaje() {
+      let d = new Date().getDate();
+      mensajeTexto.innerText = mensajesArr[d % mensajesArr.length];
+    }
+
+    // JUEGO PREGUNTAS
+    let preguntas = [
+      {
+        p: "¿Quién es mi persona favorita?",
+        o: ["Tú 😌", "Nadie", "No sé"],
+        r: 0,
+      },
+      { p: "¿Qué quiero contigo?", o: ["Nada", "Algo serio", "Todo ❤️"], r: 2 },
+      { p: "¿Cuál es nuestro día?", o: ["24 ❤️", "1", "Nunca"], r: 0 },
+      { p: "¿Qué día nos conocimos?", o: ["09/12", "12/12", "Otro"], r: 0 },
+      { p: "¿Qué hago cuando te veo?", o: ["Sonreír", "Callarme", "Nada"], r: 0 },
+    ];
+    let actualPreg;
+    let puntajeActual = 0;
+    function cargarJuego() {
+      mostrarPregunta();
+    }
+    function mostrarPregunta() {
+      let q = preguntas[Math.floor(Math.random() * preguntas.length)];
+      actualPreg = q;
+      pregunta.innerText = q.p;
+      op1.innerText = q.o[0];
+      op2.innerText = q.o[1];
+      op3.innerText = q.o[2];
+    }
+    function responder(i) {
+      if (i === actualPreg.r) {
+        resultado.innerText = "Correcto 😌❤️";
+        puntajeActual++;
+      } else {
+        resultado.innerText = "Error 😅 pero te quiero";
+      }
+      puntaje.innerText = "Puntos de amor ❤️: " + puntajeActual;
+      setTimeout(mostrarPregunta, 1000);
+    }
+
+    // GALERÍA INTERACTIVA
+    let frasesFotos = [
+      "❤️ Te ves hermosa",
+      "😍 Me encanta tu sonrisa",
+      "😌 Me haces feliz",
+      "Mi persona favorita",
+      "💖 Contigo todo es mejor",
+      "🌹 Siempre pienso en ti",
+      "💫 Me inspiras",
+      "💌 Me alegra verte",
+      "🥰 Tu risa me encanta",
+      "✨ Eres especial",
+      "💛 Eres única",
+      "💓 Me haces sonreír",
+      "🌟 Todo contigo es mejor",
+      "💖 Gracias por estar",
+      "💞 Mi corazón es tuyo",
+      "🎀 Siempre me sorprendes",
+      "🫶 Me importas mucho",
+      "💘 Eres increíble",
+      "💝 Siempre me haces feliz",
+      "🫀 Me encanta tu forma de ser",
+    ];
+    function fotoSorpresa(i) {
+      sorpresaFoto.innerText =
+        frasesFotos[Math.floor(Math.random() * frasesFotos.length)];
+      generarConfeti();
+    }
+
+    // MINI JUEGO MEMORIA
+    let memoriaItems = [
+      "❤️",
+      "😍",
+      "😌",
+      "😏",
+      "💖",
+      "👑",
+      "👨‍👩‍👧‍👦",
+      "🍎",
+      "🌽",
+      "🍇",
+      "🍊",
+      "🌰",
+      "🥜",
+    ];
+    let memoriaGrid = [];
+    function inicializarMiniMemoria() {
+      let grid = document.getElementById("memoriaGrid");
+      grid.innerHTML = "";
+      memoriaGrid = [];
+      let items = memoriaItems.concat(memoriaItems); // pares
+      items.sort(() => Math.random() - 0.5);
+      items.forEach((item, i) => {
+        let btn = document.createElement("button");
+        btn.innerText = "?";
+        btn.style.fontSize = "24px";
+        btn.onclick = () => seleccionarMemoria(i);
+        memoriaGrid.push({ item: item, btn: btn, abierto: false });
+        grid.appendChild(btn);
+      });
+    }
+    let primera = null;
+    function seleccionarMemoria(i) {
+      let cel = memoriaGrid[i];
+      if (cel.abierto) return;
+      cel.btn.innerText = cel.item;
+      cel.abierto = true;
+      if (primera === null) {
+        primera = i;
+      } else {
+        if (memoriaGrid[primera].item === cel.item) {
+          miniMemResultado.innerText = "¡Emparejado! ❤️";
+          generarConfeti();
+        } else {
+          setTimeout(() => {
+            memoriaGrid[primera].btn.innerText = "?";
+            memoriaGrid[primera].abierto = false;
+            cel.btn.innerText = "?";
+            cel.abierto = false;
+            primera = null;
+          }, 1000);
+          return;
+        }
+        primera = null;
+      }
+    }
+
+    // MINI JUEGO ADIVINA
+    let adivinaFrases = frasesFotos;
+    let fraseDelDia = "";
+    function inicializarMiniAdivina() {
+      fraseDelDia = adivinaFrases[Math.floor(Math.random() * adivinaFrases.length)];
+      let opciones = document.getElementById("adivinaOpciones");
+      opciones.innerHTML = "";
+      let opts = [fraseDelDia];
+      while (opts.length < 3) {
+        let f = adivinaFrases[Math.floor(Math.random() * adivinaFrases.length)];
+        if (!opts.includes(f)) opts.push(f);
+      }
+      opts.sort(() => Math.random() - 0.5);
+      opts.forEach((o) => {
+        let btn = document.createElement("button");
+        btn.innerText = o;
+        btn.onclick = () => adivinaRespuesta(o);
+        opciones.appendChild(btn);
+      });
+    }
+    function miniAdivina() {
+      miniAdivResultado.innerText = "Intenta adivinar ❤️";
+    }
+    function adivinaRespuesta(o) {
+      if (o === fraseDelDia) {
+        miniAdivResultado.innerText = "¡Correcto! 😌❤️";
+        generarConfeti();
+      } else {
+        miniAdivResultado.innerText = "¡Casi! 😅";
+      }
+    }
+
+    // CAJA DE RECUERDOS
+    let recuerdos = [
+      "Nuestro primer mensaje",
+      "La primera vez que sonreíste 😍",
+      "Tu risa me hace feliz",
+      "Cuando me abrazaste 💖",
+      "Tu mirada me enamora ❤️",
+    ];
+    function recuerdoSorpresa() {
+      recuerdoTexto.innerText =
+        recuerdos[Math.floor(Math.random() * recuerdos.length)];
+      generarConfeti();
+    }
+
+    // BOTÓN SORPRESA
+    function botonSorpresa() {
+      alert("🎉 Sorpresa ❤️ Te amo");
+      generarConfeti();
+    }
+
+    // CONFETI
+    function generarConfeti() {
+      for (let i = 0; i < 30; i++) {
+        let c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.background = ["#ff2e2e", "#ffffff", "#ff6666"][
+          Math.floor(Math.random() * 3)
+        ];
+        c.style.animationDuration = Math.random() * 3 + 2 + "s";
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3000);
+      }
+    }
+
+    // NOTAS RAPIDAS GUARDAR LOCALSTORAGE
+    function cargarNotas() {
+      let n = localStorage.getItem("notasYarely");
+      if (n) notasTexto.value = n;
+    }
+    notasTexto.addEventListener("input", function () {
+      localStorage.setItem("notasYarely", this.value);
+    });
+  </script>
+</body>
+</html>
